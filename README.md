@@ -108,7 +108,7 @@ exon_number, exon_id, level, tag, havana_transcript, havana_gene
 
 # Merge harmonized GTFs into master_lincRNA GTF 
 Outputs:
-- `master_lincRNA_v3.gtf`
+- `master_lincRNA_1.gtf`
 ---
 
 ## Dependencies
