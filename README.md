@@ -4,9 +4,9 @@ A multi-database lincRNA annotation pipeline that integrates reference annotatio
 
 ---
 Sources:   
-GENCODE v49 : https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.primary_assembly.annotation.gtf.gz  
-NONCODE v6  : https://v7.noncode.org/datadownload/NONCODEv6_human_hg38_lncRNA.gtf.gz  
-RNA Central v26: https://ftp.ebi.ac.uk/pub/databases/RNAcentral/releases/26.0/genome_coordinates/gff3/homo_sapiens.GRCh38.gff3.gz  
+GENCODE v49 :   https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.primary_assembly.annotation.gtf.gz  
+NONCODE v6  :   https://v7.noncode.org/datadownload/NONCODEv6_human_hg38_lncRNA.gtf.gz  
+RNA Central v26:   https://ftp.ebi.ac.uk/pub/databases/RNAcentral/releases/26.0/genome_coordinates/gff3/homo_sapiens.GRCh38.gff3.gz  
 
 ---
 Tools applied to complete gene, transcript, exon hierarchy in NONCODEv6_human_hg38_lncRNA.gtf : gffutils (v0.14)  
@@ -36,31 +36,31 @@ Priority order: GENCODE_v49 >NONCODE_v6 >RNACentral_v26
 ## Repository Structure
 
 ```
-```text
-Master-GTF/
-├── gencode/
-│   └── gencode_lincRNA.sh
-├── merge/
-│   └── merge_v2.sh
-├── noncode/
-│   ├── modif/
-│   │   └── noncode_modif.sh
-│   └── noncode_lincRNA.sh
-├── rnacentral/
-│   ├── modif/
-│   ├── agat_convert2.sh
-│   ├── agat_convert3.sh
-│   └── rnacentral_lincRNA.sh
-├── verify_overlap/
-│   ├── 00_unique_entries.sh
-│   ├── 01_verify_pairwise_overlap.sh
-│   ├── 02_remove_overlaps.sh
-│   ├── 03_verify_zero_overlaps.sh
-│   └── 04_verify_unique_enties_bed.sh
-├── README.md
-├── agat_convert.log
-├── agat_convert.sh
-└── install_agat.sh
+iLncRNA_repo/
+├── GTF/
+│   └── master_lincRNA_1.gtf
+├── codes/
+│   ├── gencode/
+│   │   ├── README.md
+│   │   └── gencode_lincRNA.sh
+│   ├── merge/
+│   │   ├── merge.sh
+│   │   └── remove_chr_patch.sh
+│   ├── noncode/
+│   │   └── modif/
+│   │       ├── noncode_modif.sh
+│   │       ├── noncode_gffutils_5.sh
+│   │       └── noncode_lincRNA.sh
+│   ├── rnacentral/
+│   │   └── modif/
+│   │       ├── changes_rc_v2.sh
+│   │       ├── agat_convert3.sh
+│   │       └── rnacentral_lincRNA.sh
+│   └── verify_overlap/
+│       ├── 00_create_bed.sh
+│       ├── 01_unique_entries.sh
+│       └── 02_verify_unique_enties_bed.sh
+└── README.md
 ```
 ---
 
