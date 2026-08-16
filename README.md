@@ -1,6 +1,6 @@
 # Master GTF — Comprehensive intergenic lncRNA (lincRNA) Annotation Pipeline (hg38)
 
-A multi-database lincRNA annotation pipeline that integrates reference annotations from **GENCODE**, **NONCODE**, and **RNAcentral** into unified master GTF files for the human genome assembly **hg38 (GRCh38)**.
+A multi-database lincRNA annotation pipeline that integrates reference annotations from **GENCODE**, **NONCODE**, and **RNAcentral** into unified master GTF file for the human genome assembly **hg38 (GRCh38)**.
 
 ---
 
@@ -249,7 +249,7 @@ bash codes/merge/remove_chr_patch.sh
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/<your-org>/iLncRNA_repo.git
+   git clone https://github.com/teenu2207/iLncRNA_repo.git
    cd iLncRNA_repo
    ```
 
@@ -313,12 +313,12 @@ bash codes/verify_overlap/02_verify_unique_enties_bed.sh
 
 ## Citation / Acknowledgements
 
-If you use this resource, please cite the original databases:
-
-- **GENCODE:** Frankish et al., *Nucleic Acids Research*, 2023
-- **NONCODE:** Fang et al., *Nucleic Acids Research*, 2022
-- **RNAcentral:** The RNAcentral Consortium, *Nucleic Acids Research*, 2021
+- **GENCODE:** Mudge, J. M., Carbonell-Sala, S., Diekhans, M., Martinez, J. G., Hunt, T., Jungreis, I., Loveland, J. E., Arnan, C., Barnes, I., Bennett, R., Berry, A., Bignell, A., Cerdán-Vélez, D., Cochran, K., Cortés, L. T., Davidson, C., Donaldson, S., Dursun, C., Fatima, R., Hardy, M., … Frankish, A. (2025). GENCODE 2025: reference gene annotation for human and mouse. Nucleic acids research, 53(D1), D966–D975. https://doi.org/10.1093/nar/gkae1078
+- **NONCODE:** Zhao, L., Wang, J., Li, Y., Song, T., Wu, Y., Fang, S., Bu, D., Li, H., Sun, L., Pei, D., Zheng, Y., Huang, J., Xu, M., Chen, R., Zhao, Y., & He, S. (2021). NONCODEV6: an updated database dedicated to long non-coding RNA annotation in both animals and plants. Nucleic acids research, 49(D1), D165–D171. https://doi.org/10.1093/nar/gkaa1046  
+- **RNAcentral:** The RNAcentral Consortium , RNAcentral in 2026: genes and literature integration, Nucleic Acids Research, Volume 54, Issue D1, 6 January 2026, Pages D303–D313, https://doi.org/10.1093/nar/gkaf1329
+- **AGAT:** Jacques Dainat, Robrecht Cannoodt, André Soares, Daniel García Ruano, Darío Hereñú, Dr. K. D. Murray, Ed Davis, Ivan Ugrin, Kathryn Crouch, Lucile Soler, pascal-git, Zachary Zollman& tayyrov. (2026). NBISweden/AGAT: AGAT v1.7.0 (Version v1.7.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.19499560
+- **gffutils:** 	https://github.com/daler/gffutils
 
 ---
 
-*Maintained by the subhash lab, IIT Jammu. For questions or issues, please open a GitHub Issue.*
+*Maintained by the Subhash lab, IIT Jammu. For questions or issues, please open a GitHub Issue.*
