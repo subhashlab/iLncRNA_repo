@@ -1,6 +1,6 @@
 # Master GTF — Comprehensive intergenic lncRNA (lincRNA) Annotation Pipeline (hg38)
 
-A multi-database lincRNA annotation pipeline that integrates reference annotations from **GENCODE**, **NONCODE**, and **RNAcentral** into unified master GTF files for the human genome assembly **hg38 (GRCh38)**.
+A multi-database lincRNA annotation pipeline that integrates reference annotations from **GENCODE**, **NONCODE**, and **RNAcentral** into unified master GTF file for the human genome assembly **hg38 (GRCh38)**.
 
 ---
 
@@ -24,13 +24,13 @@ A multi-database lincRNA annotation pipeline that integrates reference annotatio
 
 The goal of this project is to produce a **comprehensive, non-redundant set of intergenic lncRNA (lincRNA) annotations** for the human genome (hg38) by consolidating entries from three major public databases:
 
-- Extract lincRNA gene models from **GENCODE v49**, **NONCODE v6**, and **RNAcentral v26**
+-  **GENCODE v49**, **NONCODE v6**, and **RNAcentral v26**
 - Resolve format inconsistencies (GFF3 → GTF conversion, incomplete gene/transcript/exon hierarchies)
 - Remove overlaps between lncRNA and non-lncRNA loci using interval arithmetic
 - Harmonize GTF attribute fields (column 9) to match GENCODE v49 conventions
 - Merge harmonized annotations into a single **master lincRNA GTF** (`master_lincRNA_1.gtf`)
 
-The resulting resource is intended for use as a reference annotation in RNA-seq quantification, differential expression analysis, and lncRNA functional studies.
+The resulting resource is intended for use as a reference annotation in RNA-seq quantification, differential expression analysis, and lincRNA functional studies.
 
 ---
 
@@ -44,9 +44,8 @@ The resulting resource is intended for use as a reference annotation in RNA-seq 
 | lincRNA extraction from all three sources | ✅ Complete |
 | Non-lncRNA overlap removal (bedtools) | ✅ Complete |
 | BED4 generation and GTF reconstruction | ✅ Complete |
-| GTF attribute harmonization (GENCODE v49 schema) | 🔄 In progress |
-| Master GTF merge (`master_lincRNA_1.gtf`) | 🔄 In progress |
-| Validation and QC | ⏳ Pending |
+| GTF attribute harmonization (GENCODE v49 schema) | ✅ Complete |
+| Master GTF merge (`master_lincRNA_1.gtf`) | ✅ Complete |
 
 ---
 
@@ -94,17 +93,17 @@ iLncRNA_repo/
 │   │   ├── merge.sh                   # Merge harmonized GTFs into master
 │   │   └── remove_chr_patch.sh        # Remove alt/patch chromosome entries
 │   ├── noncode/
+│   │   ├── noncode_modif.sh # General NONCODE modifications
 │   │   └── modif/
-│   │       ├── noncode_modif.sh       # General NONCODE modifications
 │   │       ├── noncode_gffutils_5.sh  # Repair gene/transcript/exon hierarchy
 │   │       └── noncode_lincRNA.sh     # lincRNA extraction from NONCODE v6
 │   ├── rnacentral/
-│   │   └── modif/
-│   │       ├── changes_rc_v2.sh       # Post-conversion cleanup for RNAcentral
-│   │       ├── agat_convert3.sh       # GFF3 → GTF conversion via AGAT (PBS job)
-│   │       └── rnacentral_lincRNA.sh  # lincRNA extraction from RNAcentral v26
+│   │    ├── agat_convert3.sh       # GFF3 → GTF conversion via AGAT (PBS job)
+│   │    ├── rnacentral_lincRNA.sh  # lincRNA extraction from RNAcentral v26
+│   │    └── modif/
+│   │       ├── changes_rc_v2.sh       # General RNA Central modifications
 │   └── verify_overlap/
-│       ├── 00_create_bed.sh           # Convert GTF entries to BED4 format
+│       ├── 00_create_bed.sh           # Convert curated GTF from each database to BED4 format
 │       ├── 01_unique_entries.sh       # Identify non-redundant loci
 │       └── 02_verify_unique_enties_bed.sh  # Validate uniqueness of BED entries
 └── README.md
@@ -118,10 +117,10 @@ iLncRNA_repo/
 Contains the final output GTF file(s). `master_lincRNA_1.gtf` is the primary deliverable — a merged, harmonized annotation of intergenic lncRNAs from all three sources.
 
 ### `codes/gencode/`
-Scripts for extracting lincRNA biotype entries from the GENCODE v49 primary assembly annotation. GENCODE serves as the **reference schema** for attribute harmonization.
+Scripts for extracting lncRNA biotype entries from the GENCODE v49 primary assembly annotation. GENCODE serves as the **reference schema** for attribute harmonization.
 
 ### `codes/noncode/modif/`
-Scripts for repairing the NONCODE v6 GTF. The raw NONCODE GTF contains transcript and exon entries but lacks complete gene-level records. `noncode_gffutils_5.sh` uses `gffutils` to infer and insert missing gene entries, producing a complete gene → transcript → exon hierarchy.
+Script for maintaining the NONCODE v6 curated GTF as per GENCODE, The raw NONCODE GTF contains entries but lacks complete col9 attributes. `noncode_gffutils_5.sh` uses `gffutils` to infer and insert missing gene entries, producing a complete gene → transcript → exon hierarchy.
 
 ### `codes/rnacentral/modif/`
 Scripts for converting RNAcentral v26 GFF3 to GTF format (via AGAT) and subsequent cleanup. `agat_convert3.sh` is a PBS batch job submitted to the Agastya HPC cluster.
@@ -170,32 +169,20 @@ bash codes/rnacentral/modif/rnacentral_lincRNA.sh
 
 ### Step 4 — Non-lncRNA Overlap Removal (bedtools)
 
-Remove lncRNA loci that overlap non-lncRNA gene regions using bedtools intersect. AGAT and bedtools require separate conda environments:
+Remove lncRNA loci that overlap non-lncRNA gene regions using bedtools intersect. This produces a 4-column BED file (`chr`, `start`, `end`, `name`) AGAT and bedtools require separate conda environments:
 
 ```bash
 # Run in bedtools environment
-bedtools intersect -v -a lincRNA_candidates.bed -b nonlncRNA.bed > lincRNA_nonoverlap.bed
-```
-
-### Step 5 — Generate Curated BED4
-
-Produce a 4-column BED file (`chr`, `start`, `end`, `name`) from the filtered lncRNA loci. BED4 is used as a coordinate reference to pull the exact gene/transcript/exon entries from each source GTF.
-
-```bash
-bash codes/verify_overlap/00_create_bed.sh
+bedtools intersect -v -a lncRNA_candidates.bed -b nonlncRNA.bed > nonoverlap.bed
 ```
 
 > **Coordinate note:** BED uses 0-based half-open coordinates. GTF uses 1-based closed coordinates. All BED → GTF conversions add **+1 to BED start positions**.
 
-### Step 6 — GTF Reconstruction from BED4
+### Step 5 — GTF Reconstruction from BED4
 
-Pull gene, transcript, and exon entries from each source GTF using the curated BED4 as a coordinate filter:
+Pull gene, transcript, and exon entries from each source GTF using the curated BED4 as a coordinate filter.
 
-```bash
-bash codes/verify_overlap/01_unique_entries.sh
-```
-
-### Step 7 — GTF Attribute Harmonization
+### Step 6 — GTF Attribute Harmonization
 
 Standardize column 9 attributes across all three sources to match the **GENCODE v49 schema**:
 
@@ -205,13 +192,13 @@ Standardize column 9 attributes across all three sources to match the **GENCODE 
 | `transcript` | `gene_id`, `transcript_id`, `gene_type`, `gene_name`, `transcript_type`, `transcript_name`, `level`, `transcript_support_level`, `tag`, `havana_transcript`, `havana_gene` |
 | `exon` | `gene_id`, `transcript_id`, `gene_type`, `gene_name`, `transcript_type`, `transcript_name`, `exon_number`, `exon_id`, `level`, `tag`, `havana_transcript`, `havana_gene` |
 
-### Step 8 — Merge into Master GTF
+### Step 7 — Merge into Master GTF
 
 Concatenate harmonized per-source GTFs and remove alt/patch contigs to produce the final output:
 
 ```bash
-bash codes/merge/remove_chr_patch.sh
 bash codes/merge/merge.sh
+bash codes/merge/remove_chr_patch.sh
 # Output: GTF/master_lincRNA_1.gtf
 ```
 
@@ -241,7 +228,7 @@ bash codes/merge/merge.sh
 | BED → GTF start correction | `GTF_start = BED_start + 1` |
 | GTF field delimiter | **Tab only** (spaces in column 9 will break parsers) |
 | Merge priority | GENCODE v49 > NONCODE v6 > RNAcentral v26 |
-| Biotype filter | `lincRNA` (intergenic lncRNA only) |
+| Biotype filter | `lncRNA` (lncRNA only) |
 | Chromosomes retained | Primary assembly chromosomes only (chr1–22, chrX, chrY, chrM); alt/patch contigs removed |
 
 ---
@@ -262,7 +249,7 @@ bash codes/merge/merge.sh
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/<your-org>/iLncRNA_repo.git
+   git clone https://github.com/teenu2207/iLncRNA_repo.git
    cd iLncRNA_repo
    ```
 
@@ -289,15 +276,17 @@ Run scripts in the following order:
 ```
 Step 1:  codes/rnacentral/modif/agat_convert3.sh       # GFF3 → GTF (AGAT env)
 Step 2:  codes/noncode/modif/noncode_gffutils_5.sh     # Hierarchy repair
-Step 3:  codes/gencode/gencode_lincRNA.sh              # Extract GENCODE lincRNA
-         codes/noncode/modif/noncode_lincRNA.sh        # Extract NONCODE lincRNA
-         codes/rnacentral/modif/rnacentral_lincRNA.sh  # Extract RNAcentral lincRNA
-Step 4:  [bedtools intersect — see Step 4 above]       # Remove non-lncRNA overlaps (bedtools env)
-Step 5:  codes/verify_overlap/00_create_bed.sh         # Generate BED4
-Step 6:  codes/verify_overlap/01_unique_entries.sh     # Reconstruct GTF from BED4
-Step 7:  [attribute harmonization scripts]             # Harmonize column 9
-Step 8:  codes/merge/remove_chr_patch.sh               # Remove alt contigs
-         codes/merge/merge.sh                          # Final merge → master_lincRNA_1.gtf
+Step 3:  (i)codes/gencode/gencode_lincRNA.sh           # Extract GENCODE lincRNA
+         (ii.a)codes/noncode/noncode_lincRNA.sh        # Extract NONCODE lincRNA
+         (ii.b)codes/noncode/modif/noncode_modif.sh    # Modify col9 attributes
+         (iii.a)codes/rnacentral/rnacentral_lincRNA.sh # Extract RNAcentral lincRNA
+         (iii.b) codes/rnacentral/modif/rnacentral_modif.sh #Modify col9 attributes
+Step 4:  (i)codes/verify_overlap/00_create_bed.sh         # Generate BED4
+         (ii)codes/verify_overlap/01_unique_entries.sh     
+         (iii)codes/verify_overlap/02_unique_enties_bed.sh
+Step 5:  codes/merge/merge.sh                          # Final merge → master_lincRNA.gtf
+Step 6:  codes/merge/remove_chr_patch.sh               # Remove alt contigs → master_lincRNA_1.gtf
+         
 ```
 
 ### Validation
@@ -318,19 +307,18 @@ bash codes/verify_overlap/02_verify_unique_enties_bed.sh
 | **NONCODE incomplete hierarchy** | Raw NONCODE v6 GTF lacks gene-level records; gffutils repair is required before any downstream processing. |
 | **AGAT/bedtools environment conflict** | AGAT and bedtools cannot share a conda environment; always activate the correct environment before running each step. |
 | **GTF tab delimiter strictness** | Column 9 attributes must be tab-delimited at the field level. Space delimiters will cause silent parsing failures in downstream tools. |
-| **RNAcentral one-to-many URS mappings** | A single URS (Universal RNA identifier) may map to multiple genomic loci; de-duplication must be handled explicitly during lincRNA extraction. |
 | **Alt/patch contigs** | RNAcentral and NONCODE may include entries on alternate loci or patch chromosomes; `remove_chr_patch.sh` filters these before the final merge. |
 
 ---
 
 ## Citation / Acknowledgements
 
-If you use this resource, please cite the original databases:
-
-- **GENCODE:** Frankish et al., *Nucleic Acids Research*, 2023
-- **NONCODE:** Fang et al., *Nucleic Acids Research*, 2022
-- **RNAcentral:** The RNAcentral Consortium, *Nucleic Acids Research*, 2021
+- **GENCODE:** Mudge, J. M., Carbonell-Sala, S., Diekhans, M., Martinez, J. G., Hunt, T., Jungreis, I., Loveland, J. E., Arnan, C., Barnes, I., Bennett, R., Berry, A., Bignell, A., Cerdán-Vélez, D., Cochran, K., Cortés, L. T., Davidson, C., Donaldson, S., Dursun, C., Fatima, R., Hardy, M., … Frankish, A. (2025). GENCODE 2025: reference gene annotation for human and mouse. Nucleic acids research, 53(D1), D966–D975. https://doi.org/10.1093/nar/gkae1078
+- **NONCODE:** Zhao, L., Wang, J., Li, Y., Song, T., Wu, Y., Fang, S., Bu, D., Li, H., Sun, L., Pei, D., Zheng, Y., Huang, J., Xu, M., Chen, R., Zhao, Y., & He, S. (2021). NONCODEV6: an updated database dedicated to long non-coding RNA annotation in both animals and plants. Nucleic acids research, 49(D1), D165–D171. https://doi.org/10.1093/nar/gkaa1046  
+- **RNAcentral:** The RNAcentral Consortium , RNAcentral in 2026: genes and literature integration, Nucleic Acids Research, Volume 54, Issue D1, 6 January 2026, Pages D303–D313, https://doi.org/10.1093/nar/gkaf1329
+- **AGAT:** Jacques Dainat, Robrecht Cannoodt, André Soares, Daniel García Ruano, Darío Hereñú, Dr. K. D. Murray, Ed Davis, Ivan Ugrin, Kathryn Crouch, Lucile Soler, pascal-git, Zachary Zollman& tayyrov. (2026). NBISweden/AGAT: AGAT v1.7.0 (Version v1.7.0) [Computer software]. Zenodo. https://doi.org/10.5281/zenodo.19499560
+- **gffutils:** 	https://github.com/daler/gffutils
 
 ---
 
-*Maintained by the Bioinformatics Group, IIT Jammu. For questions or issues, please open a GitHub Issue.*
+*Maintained by the Subhash lab, IIT Jammu. For questions or issues, please open a GitHub Issue.*
