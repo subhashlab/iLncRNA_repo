@@ -4,7 +4,7 @@ A multi-database lincRNA annotation pipeline that integrates reference annotatio
 
 | iLncRNA version	| iLncRNA release date | Organism	| Genome assembly version	| Corresponding GENCODE release	| Corresponding Ensembl release |
 |-------|-----------------|---------------|---------|----------------|----------------|
-|v1.1| 08/Sep/2026 | *Homo sapiens*	|	GRCh38.p14 |	49	|115|
+|[v1.1](GTF/master_iLincRNAs_annotation_v1.1.gtf)| 08/Sep/2026 | *Homo sapiens*	|	GRCh38.p14 |	49	|115|
 |v1.1| __/_____/____ | *Mus musculus*	|	GRCm39 |	M38	|115|
 ---
 
