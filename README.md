@@ -49,7 +49,7 @@ The resulting resource is intended for use as a reference annotation in RNA-seq 
 | Non-lncRNA overlap removal (bedtools) | ✅ Complete |
 | BED generation and GTF reconstruction | ✅ Complete |
 | GTF attribute harmonization (GENCODE v49 schema) | ✅ Complete |
-| Master GTF merge (`master_lincRNA_1.gtf`) | ✅ Complete |
+| Master GTF merge (master_lincRNA_1.1.gtf) | ✅ Complete |
 
 ---
 
@@ -79,7 +79,7 @@ GENCODE v49  >  NONCODE v6  >  RNAcentral v26
 
 | Output File | Description |
 |---|---|
-| master_lincRNA_1.2.gtf | Merged, harmonized lincRNA GTF (GENCODE + NONCODE + RNAcentral) |
+| master_lincRNA_1.1.gtf | Merged, harmonized lincRNA GTF (GENCODE + NONCODE + RNAcentral) |
 
 ---
 
@@ -88,7 +88,7 @@ GENCODE v49  >  NONCODE v6  >  RNAcentral v26
 ```
 iLncRNA_repo/
 ├── GTF/
-│   └── master_lincRNA_1.2.gtf          # Final merged output
+│   └── master_lincRNA_1.1.gtf          # Final merged output
 ├── codes/
 │   ├── gencode/
 │   │   ├── README.md                  # GENCODE-specific notes
@@ -118,7 +118,7 @@ iLncRNA_repo/
 ## 5. Description of Major Files and Subdirectories
 
 ### GTF/
-Contains the final output GTF file(s). master_lincRNA_1.2.gtf is the primary deliverable — a merged, harmonized annotation of intergenic lncRNAs from all three sources.
+Contains the final output GTF file(s). master_lincRNA_1.1.gtf is the primary deliverable — a merged, harmonized annotation of intergenic lncRNAs from all three sources.
 
 ### codes/gencode/
 Scripts for extracting lncRNA biotype entries from the GENCODE v49 primary assembly annotation. GENCODE serves as the **reference schema** for attribute harmonization.
@@ -130,7 +130,7 @@ Script for maintaining the NONCODE v6 curated GTF as per GENCODE, The raw NONCOD
 Scripts for converting RNAcentral v26 GFF3 to GTF format (via AGAT) and subsequent cleanup. agat_convert3.sh is a PBS batch job submitted to the Agastya HPC cluster.
 
 ### codes/merge/
-Scripts for the final merge step. remove_chr_patch.sh strips non-primary assembly contigs (alternate loci, patches) before merging. merge.sh concatenates the harmonized per-source GTFs into`master_lincRNA_1.2.gtf.
+Scripts for the final merge step. remove_chr_patch.sh strips non-primary assembly contigs (alternate loci, patches) before merging. merge.sh concatenates the harmonized per-source GTFs into`master_lincRNA_1.1.gtf.
 
 ### codes/verify_overlap/
 A three-step QC workflow to confirm that gene loci in the final GTF are non-redundant. Converts GTF entries to BED4, computes unique intervals, and verifies them against the source GTFs.
@@ -289,7 +289,7 @@ Step 4:  (i)codes/verify_overlap/00_create_bed.sh         # Generate BED4
          (ii)codes/verify_overlap/01_unique_entries.sh     
          (iii)codes/verify_overlap/02_unique_enties_bed.sh
 Step 5:  codes/merge/merge.sh                          # Final merge → master_lincRNA.gtf
-Step 6:  codes/merge/remove_chr_patch.sh               # Remove alt contigs → master_lincRNA_1.2.gtf
+Step 6:  codes/merge/remove_chr_patch.sh               # Remove alt contigs → master_lincRNA_1.1.gtf
          
 ```
 
