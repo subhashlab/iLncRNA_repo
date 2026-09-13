@@ -32,7 +32,7 @@ The goal of this project is to produce a **comprehensive, non-redundant set of i
 - Resolve format inconsistencies (GFF3 → GTF conversion, incomplete gene/transcript/exon hierarchies)
 - Remove overlaps between lncRNA and non-lncRNA loci using interval arithmetic
 - Harmonize GTF attribute fields (column 9) to match GENCODE v49 conventions
-- Merge harmonized annotations into a single **master lincRNA GTF** (`master_lincRNA_1.gtf`)
+- Merge harmonized annotations into a single **master lincRNA GTF**
 
 The resulting resource is intended for use as a reference annotation in RNA-seq quantification, differential expression analysis, and lincRNA functional studies.
 
@@ -47,7 +47,7 @@ The resulting resource is intended for use as a reference annotation in RNA-seq 
 | RNAcentral v26 GFF3 → GTF conversion (AGAT) | ✅ Complete |
 | lincRNA extraction from all three sources | ✅ Complete |
 | Non-lncRNA overlap removal (bedtools) | ✅ Complete |
-| BED4 generation and GTF reconstruction | ✅ Complete |
+| BED generation and GTF reconstruction | ✅ Complete |
 | GTF attribute harmonization (GENCODE v49 schema) | ✅ Complete |
 | Master GTF merge (`master_lincRNA_1.gtf`) | ✅ Complete |
 
@@ -79,7 +79,7 @@ GENCODE v49  >  NONCODE v6  >  RNAcentral v26
 
 | Output File | Description |
 |---|---|
-| `master_lincRNA_1.gtf` | Merged, harmonized lincRNA GTF (GENCODE + NONCODE + RNAcentral) |
+| master_lincRNA_1.2.gtf | Merged, harmonized lincRNA GTF (GENCODE + NONCODE + RNAcentral) |
 
 ---
 
@@ -88,7 +88,7 @@ GENCODE v49  >  NONCODE v6  >  RNAcentral v26
 ```
 iLncRNA_repo/
 ├── GTF/
-│   └── master_lincRNA_1.gtf          # Final merged output
+│   └── master_lincRNA_1.2.gtf          # Final merged output
 ├── codes/
 │   ├── gencode/
 │   │   ├── README.md                  # GENCODE-specific notes
@@ -117,22 +117,22 @@ iLncRNA_repo/
 
 ## 5. Description of Major Files and Subdirectories
 
-### `GTF/`
-Contains the final output GTF file(s). `master_lincRNA_1.gtf` is the primary deliverable — a merged, harmonized annotation of intergenic lncRNAs from all three sources.
+### GTF/
+Contains the final output GTF file(s). master_lincRNA_1.2.gtf is the primary deliverable — a merged, harmonized annotation of intergenic lncRNAs from all three sources.
 
-### `codes/gencode/`
+### codes/gencode/
 Scripts for extracting lncRNA biotype entries from the GENCODE v49 primary assembly annotation. GENCODE serves as the **reference schema** for attribute harmonization.
 
-### `codes/noncode/modif/`
-Script for maintaining the NONCODE v6 curated GTF as per GENCODE, The raw NONCODE GTF contains entries but lacks complete col9 attributes. `noncode_gffutils_5.sh` uses `gffutils` to infer and insert missing gene entries, producing a complete gene → transcript → exon hierarchy.
+### codes/noncode/modif/
+Script for maintaining the NONCODE v6 curated GTF as per GENCODE, The raw NONCODE GTF contains entries but lacks complete col9 attributes. noncode_gffutils_5.sh uses gffutils to infer and insert missing gene entries, producing a complete gene → transcript → exon hierarchy.
 
-### `codes/rnacentral/modif/`
-Scripts for converting RNAcentral v26 GFF3 to GTF format (via AGAT) and subsequent cleanup. `agat_convert3.sh` is a PBS batch job submitted to the Agastya HPC cluster.
+### codes/rnacentral/modif/
+Scripts for converting RNAcentral v26 GFF3 to GTF format (via AGAT) and subsequent cleanup. agat_convert3.sh is a PBS batch job submitted to the Agastya HPC cluster.
 
-### `codes/merge/`
-Scripts for the final merge step. `remove_chr_patch.sh` strips non-primary assembly contigs (alternate loci, patches) before merging. `merge.sh` concatenates the harmonized per-source GTFs into `master_lincRNA_1.gtf`.
+### codes/merge/
+Scripts for the final merge step. remove_chr_patch.sh strips non-primary assembly contigs (alternate loci, patches) before merging. merge.sh concatenates the harmonized per-source GTFs into`master_lincRNA_1.2.gtf.
 
-### `codes/verify_overlap/`
+### codes/verify_overlap/
 A three-step QC workflow to confirm that gene loci in the final GTF are non-redundant. Converts GTF entries to BED4, computes unique intervals, and verifies them against the source GTFs.
 
 ---
@@ -155,7 +155,7 @@ agat_convert_sp_gff2gtf.pl \
 
 ### Step 2 — Hierarchy Repair (NONCODE)
 
-The NONCODE v6 GTF lacks gene-level records. Use `gffutils` to reconstruct the complete gene → transcript → exon hierarchy:
+The NONCODE v6 GTF lacks gene-level records. Use gffutils to reconstruct the complete gene → transcript → exon hierarchy:
 
 ```bash
 bash codes/noncode/modif/noncode_gffutils_5.sh
@@ -173,7 +173,7 @@ bash codes/rnacentral/modif/rnacentral_lincRNA.sh
 
 ### Step 4 — Non-lncRNA Overlap Removal (bedtools)
 
-Remove lncRNA loci that overlap non-lncRNA gene regions using bedtools intersect. This produces a 4-column BED file (`chr`, `start`, `end`, `name`) AGAT and bedtools require separate conda environments:
+Remove lncRNA loci that overlap non-lncRNA gene regions using bedtools intersect. This produces a 4-column BED file (chr, start, end, name) AGAT and bedtools require separate conda environments:
 
 ```bash
 # Run in bedtools environment
@@ -192,9 +192,9 @@ Standardize column 9 attributes across all three sources to match the **GENCODE 
 
 | Feature Level | Required Attributes |
 |---|---|
-| `gene` | `gene_id`, `gene_type`, `gene_name`, `level`, `tag`, `havana_gene` |
-| `transcript` | `gene_id`, `transcript_id`, `gene_type`, `gene_name`, `transcript_type`, `transcript_name`, `level`, `transcript_support_level`, `tag`, `havana_transcript`, `havana_gene` |
-| `exon` | `gene_id`, `transcript_id`, `gene_type`, `gene_name`, `transcript_type`, `transcript_name`, `exon_number`, `exon_id`, `level`, `tag`, `havana_transcript`, `havana_gene` |
+| gene | gene_id, gene_type, gene_name, level, tag, havana_gene |
+| transcript | gene_id, transcript_id, gene_type, gene_name, transcript_type, transcript_name, level, transcript_support_level, tag, havana_transcript, havana_gene |
+| exon | gene_id, transcript_id, gene_type, gene_name, transcript_type, transcript_name, exon_number, exon_id, level, tag, havana_transcript, havana_gene |
 
 ### Step 7 — Merge into Master GTF
 
@@ -227,12 +227,12 @@ bash codes/merge/remove_chr_patch.sh
 | Parameter / Convention | Value / Rule |
 |---|---|
 | Reference genome assembly | hg38 / GRCh38 (primary assembly only) |
-| Coordinate system — BED | 0-based, half-open `[start, end)` |
-| Coordinate system — GTF | 1-based, closed `[start, end]` |
-| BED → GTF start correction | `GTF_start = BED_start + 1` |
+| Coordinate system — BED | 0-based, half-open [start, end) |
+| Coordinate system — GTF | 1-based, closed [start, end] |
+| BED → GTF start correction | GTF_start = BED_start + 1 |
 | GTF field delimiter | **Tab only** (spaces in column 9 will break parsers) |
 | Merge priority | GENCODE v49 > NONCODE v6 > RNAcentral v26 |
-| Biotype filter | `lncRNA` (lncRNA only) |
+| Biotype filter | lncRNA (lncRNA only) |
 | Chromosomes retained | Primary assembly chromosomes only (chr1–22, chrX, chrY, chrM); alt/patch contigs removed |
 
 ---
@@ -271,7 +271,7 @@ bash codes/merge/remove_chr_patch.sh
    pip install gffutils==0.14
    ```
 
-4. If running on an HPC cluster (PBS/qsub), use full binary paths inside job scripts rather than `conda activate`.
+4. If running on an HPC cluster (PBS/qsub), use full binary paths inside job scripts rather than conda activate.
 
 ### Execution Order
 
@@ -289,7 +289,7 @@ Step 4:  (i)codes/verify_overlap/00_create_bed.sh         # Generate BED4
          (ii)codes/verify_overlap/01_unique_entries.sh     
          (iii)codes/verify_overlap/02_unique_enties_bed.sh
 Step 5:  codes/merge/merge.sh                          # Final merge → master_lincRNA.gtf
-Step 6:  codes/merge/remove_chr_patch.sh               # Remove alt contigs → master_lincRNA_1.gtf
+Step 6:  codes/merge/remove_chr_patch.sh               # Remove alt contigs → master_lincRNA_1.2.gtf
          
 ```
 
@@ -311,7 +311,7 @@ bash codes/verify_overlap/02_verify_unique_enties_bed.sh
 | **NONCODE incomplete hierarchy** | Raw NONCODE v6 GTF lacks gene-level records; gffutils repair is required before any downstream processing. |
 | **AGAT/bedtools environment conflict** | AGAT and bedtools cannot share a conda environment; always activate the correct environment before running each step. |
 | **GTF tab delimiter strictness** | Column 9 attributes must be tab-delimited at the field level. Space delimiters will cause silent parsing failures in downstream tools. |
-| **Alt/patch contigs** | RNAcentral and NONCODE may include entries on alternate loci or patch chromosomes; `remove_chr_patch.sh` filters these before the final merge. |
+| **Alt/patch contigs** | RNAcentral and NONCODE may include entries on alternate loci or patch chromosomes; remove_chr_patch.sh filters these before the final merge. |
 
 ---
 
