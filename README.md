@@ -2,9 +2,16 @@
 
 A multi-database lincRNA annotation pipeline that integrates reference annotations from **GENCODE**, **NONCODE**, and **RNAcentral** into unified master GTF file for the human genome assembly **hg38 (GRCh38)**.
 
+## Human annotation
+
 | iLncRNA version	| iLncRNA release date | Organism	| Genome assembly version	| Corresponding GENCODE release	| Corresponding Ensembl release |
 |-------|-----------------|---------------|---------|----------------|----------------|
 |[v1.1](GTF/master_iLincRNAs_annotation_v1.1.gtf)| 08/Sep/2026 | *Homo sapiens*	|	GRCh38.p14 |	49	|115|
+
+## Mouse annotation
+
+| iLncRNA version	| iLncRNA release date | Organism	| Genome assembly version	| Corresponding GENCODE release	| Corresponding Ensembl release |
+|-------|-----------------|---------------|---------|----------------|----------------|
 |v1.0| __/_____/____ | *Mus musculus*	|	GRCm38.p6 |	23	|98|
 ---
 
