@@ -47,6 +47,8 @@ The resulting resource is intended for use as a reference annotation in RNA-seq 
 
 ## 2. Current Project Status
 
+### Human (hg38)
+
 | Component | Status |
 |---|---|
 | GENCODE v49 lincRNA extraction | ✅ Complete |
@@ -58,21 +60,46 @@ The resulting resource is intended for use as a reference annotation in RNA-seq 
 | GTF attribute harmonization (GENCODE v49 schema) | ✅ Complete |
 | Master GTF merge (hs_master_iLncRNAs_annotation_v1.1.gtf) | ✅ Complete |
 
+### Mouse (mm10)
+
+| Component | Status |
+|---|---|
+| GENCODE vM23 lincRNA extraction | ✅ Complete |
+| NONCODE v6 BED12 sort and BED12 → GTF conversion (bed2gtf) | ✅ Complete |
+| RNAcentral v17 GFF3 → GTF conversion (AGAT) | ✅ Complete |
+| lincRNA extraction from all three sources | ✅ Complete |
+| GTF attribute harmonization (GENCODE vM23 schema) | ✅ Complete |
+| Master GTF merge (mm_master_iLncRNA_annotation_v1.0.gtf) | ✅ Complete |
+
 ---
+
 
 ## 3. Dataset and Source Information
 
-### Reference Genome
+### Reference Genomes
 
-All annotations are mapped to **hg38 / GRCh38** (primary assembly).
+| Organism | Assembly | Primary assembly |
+|---|---|---|
+| *Homo sapiens* | hg38 / GRCh38.p14 | Primary assembly only |
+| *Mus musculus* | mm10 / GRCm38.p6 | Primary assembly only |
 
 ### Source Databases
+
+#### Human (hg38)
 
 | Database | Version | Format | Download URL |
 |---|---|---|---|
 | GENCODE | v49 | GTF | https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_49/gencode.v49.primary_assembly.annotation.gtf.gz |
 | NONCODE | v6 | GTF | https://v7.noncode.org/datadownload/NONCODEv6_human_hg38_lncRNA.gtf.gz |
 | RNAcentral | v26 | GFF3 | https://ftp.ebi.ac.uk/pub/databases/RNAcentral/releases/26.0/genome_coordinates/gff3/homo_sapiens.GRCh38.gff3.gz |
+
+#### Mouse (mm10)
+
+| Database | Version | Format | Download URL |
+|---|---|---|---|
+| GENCODE | vM23 | GTF | https://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_M23/gencode.vM23.primary_assembly.annotation.gtf.gz |
+| NONCODE | v6 | BED12 | https://v7.noncode.org/datadownload/NONCODEv6_mm10.lncAndGene.bed.gz |
+| RNAcentral | v17 | GFF3 | https://ftp.ebi.ac.uk/pub/databases/RNAcentral/releases/17.0/genome_coordinates/gff3/mus_musculus.GRCm38.gff3.gz |
 
 ### Priority Order for Merging
 
@@ -329,6 +356,25 @@ Step 13: codes/human/merge/07_exoncount.sh                              # QC: pe
 # Output: GTF/human/hs_master_iLncRNAs_annotation_v1.1.gtf
          
 ```
+
+#### Mouse (mm10)
+
+```
+Step 1:  codes/mouse/rnacentral/rnacentral_agat_1.sh                    # GFF3 → GTF conversion (AGAT env, PBS job)
+Step 2:  codes/mouse/rnacentral/rnacentral_agat_2.sh                    # Complete gene/transcript/exon hierarchy (AGAT env)
+Step 3:  codes/mouse/noncode/BED12toGTF/BED12toGTF.sh                  # Sort and convert NONCODE BED12 → GTF (bed2gtf env)
+Step 4:  codes/mouse/gencode/gencode_mm10_lincRNA.sh                    # Extract GENCODE mm10 lincRNA
+         codes/mouse/noncode/mm_noncode_lincRNA.sh                      # Extract NONCODE mm10 lincRNA
+         codes/mouse/rnacentral/rnacentral_mm10_lincRNA.sh              # Extract RNAcentral mm10 lincRNA
+Step 5:  codes/mouse/noncode/modif/noncode_lincRNA_modif.sh             # col9 harmonization (NONCODE)
+         codes/mouse/rnacentral/modif/rnacentral_lincRNA_modif.sh       # col9 harmonization (RNAcentral)
+Step 6:  codes/mouse/merge/01_merge.sh                                  # Merge all three source GTFs
+Step 7:  codes/mouse/merge/02_remove_chr_patch.sh                       # Remove alt/patch contigs
+Step 8:  codes/mouse/merge/03_workflow_200bp_SE_removal.sh              # 200 bp / single exon filter on merged GTF
+Step 9: codes/mouse/merge/04_mgi.sh                                    # Harmonize MGI gene names (post-merge)
+# Output: GTF/mouse/mm_master_iLncRNA_annotation_v1.0.gtf
+```
+
 ---
 
 ## 11. Known Issues and Caveats
@@ -336,11 +382,13 @@ Step 13: codes/human/merge/07_exoncount.sh                              # QC: pe
 | Issue | Details |
 |---|---|
 | **Coordinate system mismatch** | BED files use 0-based coordinates; GTF uses 1-based. All BED → GTF conversions must add +1 to start positions. |
-| **NONCODE incomplete hierarchy** | Raw NONCODE v6 GTF lacks gene-level records; gffutils repair is required before any downstream processing. |
+| **NONCODE incomplete hierarchy (human)** | Raw NONCODE v6 GTF lacks gene-level records; gffutils repair is required before any downstream processing. |
 | **AGAT/bedtools environment conflict** | AGAT and bedtools cannot share a conda environment; always activate the correct environment before running each step. |
 | **GTF tab delimiter strictness** | Column 9 attributes must be tab-delimited at the field level. Space delimiters will cause silent parsing failures in downstream tools. |
 | **Alt/patch contigs** | RNAcentral and NONCODE may include entries on alternate loci or patch chromosomes; remove_chr_patch.sh filters these before the final merge. |
-| **Orphan Gene and Transcripts** | For mouse NONCODE GTF, orphan genes and transcripts have 'OG' or 'OT' in their gene_id and gene_name. These entries were formed by bed2gtf tool.  
+| **Orphan genes and transcripts (mouse NONCODE)** | Mouse NONCODE GTF produced by bed2gtf contains orphan genes and transcripts with `OG` or `OT` in their gene_id and gene_name. |
+| **Unsorted NONCODE BED12 (mouse)** | The raw NONCODE mm10 BED12 file is unsorted; sorting is handled inside BED12toGTF.sh before conversion. |
+
 ---
 
 ## Citation / Acknowledgements
