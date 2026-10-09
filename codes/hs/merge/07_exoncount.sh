@@ -14,6 +14,6 @@ END {
     m = split("1,2,3,4,5,>5", o, ",")
     print "Exon count\tTranscripts"
     for (i = 1; i <= m; i++) print o[i] "\t" c[o[i]]+0
-}' master_lincRNA_hg38.gtf
+}' hs_master_iLncRNAs_annotation_v1.1.gtf
 
 #same for gencode_curated_lincRNA.sh and gencode_curated_lincRNA_v2.sh
