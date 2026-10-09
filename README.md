@@ -117,7 +117,7 @@ GENCODE vM23  >  NONCODE v6  >  RNAcentral v17
 | Output File | Description |
 |---|---|
 | hs_master_iLncRNAs_annotation_v1.1.gtf | Merged, harmonized lincRNA GTF (GENCODE + NONCODE + RNAcentral) |
-| mm_master_iLncRNAs_annotation_v1.o.gtf | Merged, harmonized lincRNA GTF (GENCODE + NONCODE + RNAcentral) |
+| mm_master_iLncRNAs_annotation_v1.0.gtf | Merged, harmonized lincRNA GTF (GENCODE + NONCODE + RNAcentral) |
 ---
 
 ## 4. Repository Structure
