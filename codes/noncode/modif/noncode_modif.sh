@@ -21,31 +21,31 @@ awk -F'\t' 'BEGIN{OFS="\t"} $3=="gene" {match($9,/gene_id "([^"]+)"/,a); $9=$9" 
 
 #TRANSCRIPT
 
-#add 'gene_type "lncRNA";' after transcript_id 
+# add 'gene_type "lncRNA";' after transcript_id 
 awk -F'\t' 'BEGIN{OFS="\t"} $3=="transcript" {sub(/transcript_id "[^"]+";/, "& gene_type \"lncRNA\";"); print} $3!="transcript" {print}' noncode_curated_lincRNA_5.gtf > noncode_curated_lincRNA_6.gtf
 
-#add 'gene_name "gene_id";' after 'gene_type "lncRNA";'
+# add 'gene_name "gene_id";' after 'gene_type "lncRNA";'
 awk -F'\t' 'BEGIN{OFS="\t"} $3=="transcript" {match($9,/gene_id "([^"]+)"/,a); sub(/gene_type "lncRNA";/, "& gene_name \""a[1]"\";"); print} $3!="transcript" {print}' noncode_curated_lincRNA_6.gtf > noncode_curated_lincRNA_7.gtf
 
 # add 'transcript_type "lncRNA";' after 'gene_name "gene_id";
 awk -F'\t' 'BEGIN{OFS="\t"} $3=="transcript" {sub(/gene_name "[^"]+";/, "& transcript_type \"lncRNA\";"); print} $3!="transcript" {print}' noncode_curated_lincRNA_7.gtf > noncode_curated_lincRNA_8.gtf
 
-#add 'transcript_name "transcript_id";' after 'transcript_type "lncRNA";' 
+# add 'transcript_name "transcript_id";' after 'transcript_type "lncRNA";' 
 
 awk -F'\t' 'BEGIN{OFS="\t"} $3=="transcript" {match($9,/transcript_id "([^"]+)"/,a); sub(/transcript_type "lncRNA";/, "& transcript_name \""a[1]"\";"); print} $3!="transcript" {print}' noncode_curated_lincRNA_8.gtf > noncode_curated_lincRNA_9.gtf
 
-#add 'level 0;' after 'transcript_name "transcript_id";'
+# add 'level 0;' after 'transcript_name "transcript_id";'
 
 awk -F'\t' 'BEGIN{OFS="\t"} $3=="transcript" {match($9,/transcript_name "([^"]+)"/,a); sub(/transcript_name "[^"]+";/, "& level 0;"); print} $3!="transcript" {print}' noncode_curated_lincRNA_9.gtf > noncode_curated_lincRNA_10.gtf
 
-#add 'hgnc_id "gene_id";' after 'level 0;'
+# add 'hgnc_id "gene_id";' after 'level 0;'
 awk -F'\t' 'BEGIN{OFS="\t"} $3=="transcript" {match($9,/gene_id "([^"]+)"/,a); sub(/level 0;/, "& hgnc_id \""a[1]"\";"); print} $3!="transcript" {print}' noncode_curated_lincRNA_10.gtf > noncode_curated_lincRNA_11.gtf
 
-#add 'tag "NONCODE_v6";' after 'hgnc_id "gene_id";'
+# add 'tag "NONCODE_v6";' after 'hgnc_id "gene_id";'
 
 awk -F'\t' 'BEGIN{OFS="\t"} $3=="transcript" {sub(/hgnc_id "[^"]+";/, "& tag \"NONCODE_v6\";"); print} $3!="transcript" {print}' noncode_curated_lincRNA_11.gtf > noncode_curated_lincRNA_12.gtf
 
-#add 'havana_gene "gene_id" after tag "NONCODE_v6";' 
+# add 'havana_gene "gene_id" after tag "NONCODE_v6";' 
 awk -F'\t' 'BEGIN{OFS="\t"} $3=="transcript" {match($9,/gene_id "([^"]+)"/,a); sub(/tag "NONCODE_v6";/, "& havana_gene \""a[1]"\";"); print} $3!="transcript" {print}' noncode_curated_lincRNA_12.gtf > noncode_curated_lincRNA_13.gtf
 
 #remove 'FPKM "0"; exon_number "";' from transcript entries 
@@ -53,7 +53,7 @@ awk -F'\t' 'BEGIN{OFS="\t"} $3=="transcript" {sub(/ FPKM "0"; exon_number "[^"]*
 
 #EXON
 
-#add 'gene_type "lncRNA"; 'gene_name "gene_id"; 'transcript_type "lncRNA"; 'transcript_name "transcript_id";'  after transcript_id
+# add 'gene_type "lncRNA"; 'gene_name "gene_id"; 'transcript_type "lncRNA"; 'transcript_name "transcript_id";'  after transcript_id
 
 awk -F'\t' 'BEGIN{OFS="\t"} $3=="exon" {match($9,/gene_id "([^"]+)"/,a); match($9,/transcript_id "([^"]+)"/,b); sub(/transcript_id "[^"]+";/, "& gene_type \"lncRNA\"; gene_name \""a[1]"\"; transcript_type \"lncRNA\"; transcript_name \""b[1]"\";"); print} $3!="exon" {print}' noncode_curated_lincRNA_13_1.gtf > noncode_curated_lincRNA_14.gtf
 
