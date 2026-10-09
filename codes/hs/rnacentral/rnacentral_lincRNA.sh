@@ -85,13 +85,5 @@ NR==FNR{
 
 #check feature types 
 awk '{print $3}' rnacentral_curated_lincRNA.gtf | sort | uniq -c
-# 170126 exon
-#  12708 gene
-#  78134 transcript
 
-
-#12/9/26
-# 5617 exon
-#    942 gene
-#   2308 transcript
 
