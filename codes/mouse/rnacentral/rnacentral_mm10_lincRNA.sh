@@ -102,16 +102,4 @@ NR==FNR{
 }
 ' rnacentral_unique_lincRNA_gene_ids.txt mus_musculus.GRCm38_fixed_exon_chr.main.gtf > rnacentral_curated_lincRNA.gtf
 
-#21/9/26
-#check feature types 
 awk '{print $3}' rnacentral_curated_lincRNA.gtf | sort | uniq -c
-# 18293 exon
-#   8440 gene
-#   8440 transcript
-
-#7/10/26 
-#check feature types
-
-#  21572 exon
-#   9932 gene
-#   9932 transcript
