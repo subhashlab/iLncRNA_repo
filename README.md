@@ -262,8 +262,13 @@ Standardize column 9 attributes across all three sources to match the **GENCODE 
 Concatenate harmonized per-source GTFs and remove alt/patch contigs to produce the final output:
 
 ```bash
-bash codes/merge/merge.sh
-bash codes/merge/remove_chr_patch.sh
+bash 01_merge.sh                            
+bash 02_remove_chr_patch.sh           
+bash 03_remove_ver.sh                       
+bash 04_workflow_200bp_SE_master.sh         
+bash 05_verify_counts.sh                  
+bash 06_length_distribution.sh              
+bash 07_exoncount.sh  
 # Output: GTF/hs_master_iLncRNAs_annotation_v1.1.gtf
 ```
 
