@@ -23,7 +23,7 @@ END {
     n = split("<200,200-500,500-1000,1000-2000,2000-5000,5000-10000,>10000", o, ",")
     print "Seq Length(nt)\tTranscripts"
     for (i = 1; i <= n; i++) print o[i] "\t" c[o[i]]+0
-}' master_lincRNA_hg38.gtf
+}' hs_master_iLncRNAs_annotation_v1.1.gtf
 
 
 #GENES
@@ -54,7 +54,7 @@ END {
     n = split("<200,200-500,500-1000,1000-2000,2000-5000,5000-10000,10000-50000,50000-100000,>100000", o, ",")
     print "Seq Length(nt)\tGenes"
     for (i = 1; i <= n; i++) print o[i] "\t" c[o[i]]+0
-}' master_lincRNA_hg38.gtf
+}' hs_master_iLncRNAs_annotation_v1.1.gtf
 
 
 #same for gencode_curated_lincRNA.gtf and gencode_curated_lincRNA_v2.gtf
@@ -78,6 +78,6 @@ END {
     n = split("<50,50-100,100-200,200-300,300-500,500-1000,>1000", o, ",")
     print "Seq Length(nt)\tExons"
     for (i = 1; i <= n; i++) print o[i] "\t" c[o[i]]+0
-}' master_lincRNA_hg38.gtf
+}' hs_master_iLncRNAs_annotation_v1.1.gtf
 
 #same for gencode_curated_lincRNA.gtf and gencode_curated_lincRNA_v2.gtf
