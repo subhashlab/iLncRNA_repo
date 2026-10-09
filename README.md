@@ -1,4 +1,4 @@
-# Master GTF — Comprehensive intergenic lncRNA (iLncRNA) Annotation Pipeline
+# iLncRNA: A Comprehensive Non-Redundant Reference Annotation of Human and Mouse Intergenic Long Non-Coding RNAs
 
 A multi-database lincRNA annotation pipeline that integrates reference annotations from **GENCODE**, **NONCODE**, and **RNAcentral** into unified master GTF file from the appropriate genome assemblies of human and mouse.
 
@@ -14,6 +14,8 @@ A multi-database lincRNA annotation pipeline that integrates reference annotatio
 |-------|-----------------|---------------|---------|----------------|----------------|
 |[v1.0](https://raw.githubusercontent.com/subhashlab/iLncRNA_repo/6727c5ac562326fb6b3f92e060c408ba7583b6fb/GTF/mouse/mm_master_iLncRNA_annotation_v1.0.gtf)| 09/10/2026 | *Mus musculus*	|	GRCm38.p6 |	23	|98|
 ---
+
+# Master GTF — Comprehensive intergenic lncRNA (iLncRNA) Annotation Pipeline
 
 ## Table of Contents
 
