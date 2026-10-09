@@ -184,16 +184,16 @@ iLncRNA_repo/
 ### GTF/
 Contains the final output GTF file(s). hs_master_iLncRNAs_annotation_v1.1.gtf is the primary deliverable — a merged, harmonized annotation of intergenic lncRNAs from all three sources.
 
-### codes/gencode/
+### codes/hs/gencode/
 Scripts for extracting lncRNA biotype entries from the GENCODE v49 primary assembly annotation. GENCODE serves as the **reference schema** for attribute harmonization.
 
-### codes/noncode/modif/
+### codes/hs/noncode/modif/
 Script for maintaining the NONCODE v6 curated GTF as per GENCODE, The raw NONCODE GTF contains entries but lacks complete col9 attributes. noncode_gffutils_5.sh uses gffutils to infer and insert missing gene entries, producing a complete gene → transcript → exon hierarchy.
 
-### codes/rnacentral/modif/
+### codes/hs/rnacentral/modif/
 Scripts for converting RNAcentral v26 GFF3 to GTF format (via AGAT) and subsequent cleanup. agat_convert3.sh is a PBS batch job submitted to the Agastya HPC cluster.
 
-### codes/merge/
+### codes/hs/merge/
 Scripts for the final merge step. remove_chr_patch.sh strips non-primary assembly contigs (alternate loci, patches) before merging. merge.sh concatenates the harmonized per-source GTFs into hs_master_iLncRNAs_annotation_v1.1.gtf.
 
 ---
