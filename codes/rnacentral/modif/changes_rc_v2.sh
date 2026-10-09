@@ -1,9 +1,9 @@
 #GENE
 
 #remove ID attribute
-awk 'BEGIN{FS="\t"; OFS="\t"} $3=="gene" {gsub(/ID "[^"]*"; /, "", $9)} {print}' rnacentral_curated_lincRNA_v2.gtf > rnacentral_curated_lincRNA_v2_1.gtf
+awk 'BEGIN{FS="\t"; OFS="\t"} $3=="gene" {gsub(/ID "[^"]*"; /, "", $9)} {print}' rnacentral_curated_lincRNA.gtf > rnacentral_curated_lincRNA_1.gtf
 
-#after gene_id,  add 'gene_type "lncRNA";',  rename 'Name "gene_id";' to 'gene_name "gene_id";' , add 'level 0;', 'hgnc_id "gene_id", 'havana_gene "gene_id"'  
+#after gene_id,  add 'gene_type "lncRNA";',  rename 'Name "gene_id";' to 'gene_name "gene_id";' , add 'level 0;', 'mgi_id "gene_id", 'havana_gene "gene_id"'  
 awk 'BEGIN{FS="\t"; OFS="\t"}
 $3=="gene" {
     match($9, /gene_id "([^"]+)"/, g)
@@ -14,9 +14,9 @@ $3=="gene" {
     rest = $9
     gsub(/gene_id "[^"]*"; /, "", rest)
     gsub(/Name "[^"]*"; /, "", rest)
-    $9 = "gene_id \"" gid "\"; gene_type \"lncRNA\"; gene_name \"" gname "\"; level 0; hgnc_id \"" gid "\"; havana_gene \"" gid "\"; " rest
+    $9 = "gene_id \"" gid "\"; gene_type \"lncRNA\"; gene_name \"" gname "\"; level 0; mgi_id \"" gid "\"; havana_gene \"" gid "\"; " rest
 }
-{print}' rnacentral_curated_lincRNA_v2_1.gtf > rnacentral_curated_lincRNA_v2_2.gtf
+{print}' rnacentral_curated_lincRNA_1.gtf > rnacentral_curated_lincRNA_2.gtf
 
 #remove remaining column 
 awk 'BEGIN{FS="\t"; OFS="\t"}
@@ -25,15 +25,16 @@ $3=="gene" {
     gid = g[1]
     match($9, /Name "([^"]+)"/, n)
     gname = n[1]
-    $9 = "gene_id \"" gid "\"; gene_type \"lncRNA\"; gene_name \"" gname "\"; level 0; hgnc_id \"" gid "\"; havana_gene \"" gid "\";"
+    $9 = "gene_id \"" gid "\"; gene_type \"lncRNA\"; gene_name \"" gname "\"; level 0; mgi_id \"" gid "\"; havana_gene \"" gid "\";"
 }
-{print}' rnacentral_curated_lincRNA_v2_1.gtf > rnacentral_curated_lincRNA_v2_2_1.gtf
+{print}' rnacentral_curated_lincRNA_2.gtf > rnacentral_curated_lincRNA_3.gtf
 
 #TRANSCRIPT
 
 #remove ID attribute after transcript id
 
-awk 'BEGIN{FS="\t"; OFS="\t"} $3=="transcript" {gsub(/ID "[^"]*"; /, "", $9)} {print}' rnacentral_curated_lincRNA_v2_2_1.gtf > rnacentral_curated_lincRNA_v2_3.gtf
+awk 'BEGIN{FS="\t"; OFS="\t"} $3=="transcript" {gsub(/ID "[^"]*"; /, "", $9)} {print}' rnacentral_curated_lincRNA_3.gtf > rnacentral_curated_lincRNA_4.gtf
+
 
 #after transcript_id, add 'gene_type "lncRNA";' , 'gene_name "gene_id";' , 'transcript_type "lncRNA";' , 'transcript_name "transcript_id";' , 'level 0;' , 'hgnc_id "gene_id";' , 'tag "NONCODE_v6";' , 'havana_gene "gene_id"; ' and remaining attributes after these attributes
 
@@ -48,7 +49,7 @@ $3=="transcript" {
     gsub(/transcript_id "[^"]*"; /, "", rest)
     $9 = "gene_id \"" gid "\"; transcript_id \"" tid "\"; gene_type \"lncRNA\"; gene_name \"" gid "\"; transcript_type \"lncRNA\"; transcript_name \"" tid "\"; level 0; hgnc_id \"" gid "\"; tag \"RNA_Central_v26\"; havana_gene \"" gid "\"; " rest
 }
-{print}' rnacentral_curated_lincRNA_v2_3.gtf > rnacentral_curated_lincRNA_v2_4.gtf
+{print}' rnacentral_curated_lincRNA_4.gtf > rnacentral_curated_lincRNA_5.gtf
 
 #remove remaining attributes 
 awk 'BEGIN{FS="\t"; OFS="\t"}
@@ -59,7 +60,7 @@ $3=="transcript" {
     tid = t[1]
     $9 = "gene_id \"" gid "\"; transcript_id \"" tid "\"; gene_type \"lncRNA\"; gene_name \"" gid "\"; transcript_type \"lncRNA\"; transcript_name \"" tid "\"; level 0; hgnc_id \"" gid "\"; tag \"RNA_Central_v26\"; havana_gene \"" gid "\";"
 }
-{print}' rnacentral_curated_lincRNA_v2_3.gtf > rnacentral_curated_lincRNA_v2_4_1.gtf
+{print}' rnacentral_curated_lincRNA_5.gtf > rnacentral_curated_lincRNA_6.gtf
 
 #EXON
 #1. keep gene_id "RNACG..."; transcript_id "URS..."; gene_type "lncRNA"; gene_name "RNACG..."; transcript_type "lncRNA"; transcript_name "URS..."; 2. keep remaining attributes 
@@ -74,7 +75,7 @@ $3=="exon" {
     gsub(/transcript_id "[^"]*"; /, "", rest)
     $9 = "gene_id \"" gid "\"; transcript_id \"" tid "\"; gene_type \"lncRNA\"; gene_name \"" gid "\"; transcript_type \"lncRNA\"; transcript_name \"" tid "\"; " rest
 }
-{print}' rnacentral_curated_lincRNA_v2_4_1.gtf > rnacentral_curated_lincRNA_v2_5.gtf
+{print}' rnacentral_curated_lincRNA_6.gtf > rnacentral_curated_lincRNA_7.gtf
 
 #prepend 'exon_number number;' after transcript_name
 awk 'BEGIN{FS="\t"; OFS="\t"}
@@ -94,8 +95,8 @@ $3=="exon" {
     gsub(/transcript_name "[^"]*"; /, "", rest)
     $9 = "gene_id \"" gid "\"; transcript_id \"" tid "\"; gene_type \"lncRNA\"; gene_name \"" gid "\"; transcript_type \"lncRNA\"; transcript_name \"" tid "\"; exon_number " enum "; " rest
 }
-{print}' rnacentral_curated_lincRNA_v2_5.gtf > rnacentral_curated_lincRNA_v2_6.gtf
-#add 'exon_id "exon_id";' after 'exon_number number' from ID "URS0002853A2B_9606.1:ncRNA_exon2" = ID "URS0002853A2B_9606.12
+{print}' rnacentral_curated_lincRNA_7.gtf > rnacentral_curated_lincRNA_8.gtf
+# add 'exon_id "exon_id";' after 'exon_number number' from ID "URS0002853A2B_9606.1:ncRNA_exon2" = ID "URS0002853A2B_9606.12
 
 awk 'BEGIN{FS="\t"; OFS="\t"}
 $3=="exon" {
@@ -117,10 +118,10 @@ $3=="exon" {
     gsub(/exon_id "[^"]*"; /, "", rest)
     $9 = "gene_id \"" gid "\"; transcript_id \"" tid "\"; gene_type \"lncRNA\"; gene_name \"" gid "\"; transcript_type \"lncRNA\"; transcript_name \"" tid "\"; exon_number " enum "; exon_id \"" eid "\"; " rest
 }
-{print}' rnacentral_curated_lincRNA_v2_6.gtf > rnacentral_curated_lincRNA_v2_7.gtf
+{print}' rnacentral_curated_lincRNA_8.gtf > rnacentral_curated_lincRNA_9.gtf
 
 #remove ID
-awk 'BEGIN{FS="\t"; OFS="\t"} $3=="exon" {gsub(/ID "[^"]*"; /, "", $9)} {print}' rnacentral_curated_lincRNA_v2_7.gtf > rnacentral_curated_lincRNA_v2_8.gtf
+awk 'BEGIN{FS="\t"; OFS="\t"} $3=="exon" {gsub(/ID "[^"]*"; /, "", $9)} {print}' rnacentral_curated_lincRNA_9.gtf > rnacentral_curated_lincRNA_10.gtf
 #After exon_id , add 'level 0; hgnc_id "gene_id"; tag "RNA_Central_v26"; havane_gene "gene";' and keep remaining columns
 awk 'BEGIN{FS="\t"; OFS="\t"}
 $3=="exon" {
@@ -143,7 +144,7 @@ $3=="exon" {
     gsub(/exon_id "[^"]*"; /, "", rest)
     $9 = "gene_id \"" gid "\"; transcript_id \"" tid "\"; gene_type \"lncRNA\"; gene_name \"" gid "\"; transcript_type \"lncRNA\"; transcript_name \"" tid "\"; exon_number " enum "; exon_id \"" eid "\"; level 0; hgnc_id \"" gid "\"; tag \"RNA_Central_v26\"; havana_gene \"" gid "\"; " rest
 }
-{print}' rnacentral_curated_lincRNA_v2_8.gtf > rnacentral_curated_lincRNA_v2_9.gtf
+{print}' rnacentral_curated_lincRNA_10.gtf > rnacentral_curated_lincRNA_11.gtf
 #remove remaining columns after havana_gene in exon entries
 awk 'BEGIN{FS="\t"; OFS="\t"}
 $3=="exon" {
@@ -157,4 +158,4 @@ $3=="exon" {
     eid = x[1]
     $9 = "gene_id \"" gid "\"; transcript_id \"" tid "\"; gene_type \"lncRNA\"; gene_name \"" gid "\"; transcript_type \"lncRNA\"; transcript_name \"" tid "\"; exon_number " enum "; exon_id \"" eid "\"; level 0; hgnc_id \"" gid "\"; tag \"RNA_Central_v26\"; havana_gene \"" gid "\";"
 }
-{print}' rnacentral_curated_lincRNA_v2_9.gtf > rnacentral_curated_lincRNA_v2_9_1.gtf
+{print}' rnacentral_curated_lincRNA_11.gtf > rnacentral_curated_lincRNA_12.gtf
