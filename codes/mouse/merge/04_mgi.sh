@@ -9,4 +9,4 @@ $2!="HAVANA" && $2!="ENSEMBL" {
         $9 = $9 " mgi_id \"MGI:" gid "\";"
     }
 }
-{print}' master_lincRNA_1.1.gtf > mm10_master_lincRNA.gtf
+{print}' master_lincRNA_1.1.gtf > mm_master_iLncRNA_annotation_v1.0.gtf
