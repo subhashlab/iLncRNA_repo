@@ -6,13 +6,13 @@ A multi-database lincRNA annotation pipeline that integrates reference annotatio
 
 | iLncRNA version	| iLncRNA release date | Organism	| Genome assembly version	| Corresponding GENCODE release	| Corresponding Ensembl release |
 |-------|-----------------|---------------|---------|----------------|----------------|
-|[v1.1](GTF/human/hs_master_iLncRNAs_annotation_v1.1.gtf)| 08/11/2026 | *Homo sapiens*	|	GRCh38.p14 |	49	|115|
+|[v1.1](https://raw.githubusercontent.com/subhashlab/iLncRNA_repo/6727c5ac562326fb6b3f92e060c408ba7583b6fb/GTF/human/hs_master_iLncRNAs_annotation_v1.1.gtf)| 08/11/2026 | *Homo sapiens*	|	GRCh38.p14 |	49	|115|
 
 ## Mouse annotation
 
 | iLncRNA version	| iLncRNA release date | Organism	| Genome assembly version	| Corresponding GENCODE release	| Corresponding Ensembl release |
 |-------|-----------------|---------------|---------|----------------|----------------|
-|[v1.0](GTF/human/mouse/mm_master_iLncRNA_annotation_v1.0.gtf)| 09/10/2026 | *Mus musculus*	|	GRCm38.p6 |	23	|98|
+|[v1.0](https://raw.githubusercontent.com/subhashlab/iLncRNA_repo/6727c5ac562326fb6b3f92e060c408ba7583b6fb/GTF/mouse/mm_master_iLncRNA_annotation_v1.0.gtf)| 09/10/2026 | *Mus musculus*	|	GRCm38.p6 |	23	|98|
 ---
 
 ## Table of Contents
