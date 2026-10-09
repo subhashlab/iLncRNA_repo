@@ -18,14 +18,8 @@ gawk -F'\t' '
 echo "Wrote $OUT ($(wc -l < "$OUT") transcripts with exons)"
 
 
-# Step 2 (REVISED): Compute MATURE SPLICED transcript length
-#   spliced_length = sum of (exon_end - exon_start + 1) over all exons
-#                    belonging to that transcript_id
-#   (NOT the genomic span of the "transcript" feature line -- span
-#    includes introns and can look >=200bp even when the actual mature
-#    transcript that reads get counted against is under 200bp. This is
-#    why featureCounts matrices were showing genes with <200bp effective
-#    length even after filtering on genomic span.)
+# Step 2  Compute MATURE SPLICED transcript length
+#   spliced_length = sum of (exon_end - exon_start + 1) over all exons belonging to that transcript_id
 # Input : gencode_curated_lincRNA.gtf
 # Output: transcript_lengths.tsv   (columns: transcript_id, spliced_len_bp)
 
@@ -49,13 +43,7 @@ echo "Wrote $OUT ($(wc -l < "$OUT") transcripts, spliced length)"
 # Inputs : exon_counts.tsv, transcript_lengths.tsv (now spliced length)
 # Output : failing_transcripts.txt
 #
-# NOTE: transcript_lengths.tsv is now built only from exon lines
-# (step2), so a transcript with zero exon lines (shouldn't exist in a
-# valid GTF, but worth a sanity check) would not appear in this file
-# and therefore would NOT be flagged here. Cross-check against the
-# "transcript" feature count if that's a concern:
-#   comm -23 <(awk -F'\t' '$3=="transcript"{match($9,/transcript_id "([^"]+)"/,a);print a[1]}' gencode_lincRNA_v2.gtf | sort -u) \
-#            <(cut -f1 transcript_lengths.tsv | sort -u)
+# NOTE: transcript_lengths.tsv is now built only from exon lines (step2), so a transcript with zero exon lines (shouldn't exist in a valid GTF, but worth a sanity check) would not appear in this file and therefore would NOT be flagged here. 
 
 
 EXON_COUNTS="exon_counts.tsv"
@@ -107,11 +95,8 @@ echo "Wrote $OUT ($(wc -l < "$OUT") genes will be dropped)"
 
 # Step 5: Write gencode_curated_lincRNA_v2.gtf
 #   - Drop gene lines whose gene_id is in failing_genes.txt
-#   - Drop any non-gene line (transcript/exon/CDS/UTR/start_codon/
-#     stop_codon/...) whose transcript_id is in failing_transcripts.txt
-#   - Single pass over the original file, so line order is preserved
-#     and shared exon lines (distinct lines per transcript_id in GTF)
-#     are kept whenever their own transcript survives.
+#   - Drop any non-gene line (transcript/exon/CDS/UTR/start_codon/ stop_codon/...) whose transcript_id is in failing_transcripts.txt
+#   - Single pass over the original file, so line order is preserved and shared exon lines (distinct lines per transcript_id in GTF) are kept whenever their own transcript survives.
 # Inputs : gencode_curated_lincRNA.gtf, failing_transcripts.txt, failing_genes.txt
 # Output : gencode_curated_lincRNA_v2.gtf
 
@@ -143,19 +128,11 @@ BEGIN {
 
 echo "Wrote $OUT"
 
-
-
-
-
-
 # Step 6: Validate gencode_curated_lincRNA_v2.gtf
 #   - before/after feature counts
-#   - orphan child check (child feature whose transcript_id doesn't
-#     exist as a transcript line in the output)
+#   - orphan child check (child feature whose transcript_id doesn't exist as a transcript line in the output)
 #   - empty gene check (gene line with no surviving transcript)
-#   - spliced-length check: confirm NO surviving transcript has
-#     mature spliced length < 200bp (this is the check that matters
-#     for the featureCounts <200bp issue you were seeing)
+#   - spliced-length check: confirm NO surviving transcript has mature spliced length < 200bp (this is the check that matters for the featureCounts <200bp issue you were seeing)
 # All three checks should print nothing except the final PASS line.
 
 
