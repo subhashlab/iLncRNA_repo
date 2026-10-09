@@ -1,4 +1,4 @@
-# Master GTF — Comprehensive intergenic lncRNA (lincRNA) Annotation Pipeline (hg38)
+# Master GTF — Comprehensive intergenic lncRNA (lincRNA) Annotation Pipeline
 
 A multi-database lincRNA annotation pipeline that integrates reference annotations from **GENCODE**, **NONCODE**, and **RNAcentral** into unified master GTF file for the human genome assembly **hg38 (GRCh38)**.
 
