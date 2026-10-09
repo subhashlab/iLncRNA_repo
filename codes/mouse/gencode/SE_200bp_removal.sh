@@ -201,8 +201,3 @@ gawk -v minlen="$MINLEN" -F'\t' '
 
 echo "Validation complete."
 
-
-#12/9/26
-#gene       before=5219     after=4787     removed=432
-#transcript before=7598     after=6915     removed=683
-#exon       before=23309    after=22491    removed=818
